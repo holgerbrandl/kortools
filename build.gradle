@@ -1,0 +1,95 @@
+
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.8.0"
+    id "java"
+    id "maven-publish"
+    id "signing"
+    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
+//    id "org.jetbrains.kotlin.jupyter.api" version "0.11.0-87"
+}
+
+repositories {
+    mavenCentral()
+//    mavenLocal()
+}
+
+
+dependencies {
+
+
+    api 'com.google.ortools:ortools-java:9.5.2237'
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.8.0'
+//    implementation( 'org.jetbrains.kotlinx:dataframe-core:0.9.1')
+
+    testImplementation group: 'junit', name: 'junit', version: '4.13.1'
+    testImplementation 'io.kotest:kotest-assertions-core:5.4.2'
+}
+
+
+//http://stackoverflow.com/questions/34377367/why-is-gradle-install-replacing-my-version-with-unspecified
+group 'com.github.holgerbrandl'
+//version '0.16.95'
+//version '1.0'
+version '0.5'
+
+//processJupyterApiResources {
+//    libraryProducers = ["krangl.integration.Integration"]
+//}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.java)
+
+            pom {
+                name = 'kortools'
+                description = 'Kotlin wrapper for google OR Tools'
+                url = 'https://github.com/holgerbrandl/kortools'
+                licenses {
+                    license {
+                        name = 'MIT'
+                        url = 'https://github.com/holgerbrandl/kortools/blob/master/LICENSE.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'holgerbrandl'
+                        name = 'Holger Brandl'
+                        email = 'holgerbrandl@gmail.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:github.com/holgerbrandl/kortools.git'
+                    developerConnection = 'scm:git:ssh://github.com/holgerbrandl/kortools.git'
+                    url = 'https://github.com/holgerbrandl/kortools.git'
+                }
+            }
+        }
+    }
+}
+
+
+nexusPublishing {
+    repositories {
+        sonatype {
+            // we need to provide a fallback here since all dev but one won't have those credentials
+            // https://stackoverflow.com/questions/43333990/how-to-assign-default-values-for-ext-based-properties-in-gradle
+            // https://discuss.gradle.org/t/getproperty-vs-findproperty/21822
+            snapshotRepositoryUrl = uri(project.findProperty("sonatypeStagingProfileId") ?: 'not_defined')
+            username = project.findProperty("ossrhUsername")  ?: 'not_defined'
+            password = project.findProperty("ossrhPassword") ?: 'not_defined'
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
