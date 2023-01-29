@@ -14,8 +14,8 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          name: ${{ github.ref }}
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name  }}
           body: |
             See [CHANGES.md](https://github.com/holgerbrandl/kortools/blob/master/CHANGES.md) for new features, bug-fixes and changes.
           draft: false
