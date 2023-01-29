@@ -29,7 +29,7 @@ dependencies {
 group 'com.github.holgerbrandl'
 //version '0.16.95'
 //version '1.0'
-version '0.5.1'
+version '0.5.2'
 
 //processJupyterApiResources {
 //    libraryProducers = ["krangl.integration.Integration"]
