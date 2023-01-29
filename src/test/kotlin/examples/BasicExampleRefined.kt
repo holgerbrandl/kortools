@@ -16,45 +16,38 @@ package examples
 
 import kortools.*
 
-// [START import]
-// [END import]
 /** Minimal Linear Programming example to showcase calling the solver.  */
-object BasicExampleRefined {
-    @JvmStatic
-    fun main(args: Array<String>) {
+fun main() {
 
-        // Create the linear solver with the GLOP backend.
-        val solver = createSolver(SolverId.GLOP) {
-            // Create the variables x and y.
-            val x by  makeVariable(0.0, 1.0)
-            val y by makeVariable(0.0, 1.0)
+    // Create the linear solver with the GLOP backend.
+    val solver = createSolver(SolverId.GLOP) {
+        // Create the variables x and y.
+        val x by makeVariable(0.0, 1.0)
+        val y by makeVariable(0.0, 1.0)
 
-//            x.name()
-            println("Number of variables = " + numVariables())
-//            println("Number of variables = " + x)
-
-            // [START constraints]
-            // Create a linear constraint, 0 <= x + y <= 2.
-            constraint("ct", 0.0 to 2.0) {
-                x withCoeff 1.0
-                y withCoeff 1.0
-            }
-
-            println("Number of constraints = " + numConstraints())
-
-            // Create the objective function, 3 * x + y.
-            maximize {
-                3 * x + y
-            }
+        // Create a linear constraint, 0 <= x + y <= 2.
+        constraint("ct", 0.0 to 2.0) {
+            x withCoeff 1.0
+            y withCoeff 1.0
         }
 
-        solver.solve()
+        // Create the objective function, 3 * x + y.
+        maximize {
+            3 * x + y
+        }
+    }
 
+    // solve the problem
+    solver.solve()
+
+    with(solver) {
         println("Solution:")
-        println("Number of variables = " + solver.numVariables())
-        println("Number of constraints = " + solver.numConstraints())
-        println("Objective value = " + solver.objective().value())
-        println("x = " + solver.variable("x").solutionValue())
-        println("y = " + solver.variable("y").solutionValue())
+        println("Number of variables = " + numVariables())
+        println("Number of constraints = " + numConstraints())
+        println("Objective value = " + objective().value())
+        println("x = " + variable("x").solutionValue())
+        println(
+            "y = " + variable("y").solutionValue()
+        )
     }
 }

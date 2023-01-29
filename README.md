@@ -8,7 +8,41 @@ A kotlin API around [OR Tools](https://developers.google.com/optimization)
 
 `kortools` is designed for simulation practitioners, process analysts and industrial engineers, who need to go beyond the limitations of existing simulation tools to model and optimize their business-critical use-cases.
 
+## Example
 
+```kotlin
+// Create the linear solver with the GLOP backend.
+val solver = createSolver(SolverId.GLOP) {
+    // Create the variables x and y.
+    val x by makeVariable(0.0, 1.0)
+    val y by makeVariable(0.0, 1.0)
+
+    // Create a linear constraint, 0 <= x + y <= 2.
+    constraint("ct", 0.0 to 2.0) {
+        x withCoeff 1.0
+        y withCoeff 1.0
+    }
+
+    // Create the objective function, 3 * x + y.
+    maximize {
+        3 * x + y
+    }
+}
+
+// solve the problem
+solver.solve()
+
+with(solver) {
+    println("Solution:")
+    println("Number of variables = " + numVariables())
+    println("Number of constraints = " + numConstraints())
+    println("Objective value = " + objective().value())
+    println("x = " + variable("x").solutionValue())
+    println(
+        "y = " + variable("y").solutionValue()
+    )
+}
+```
 ## Misc References
 
 
